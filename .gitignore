@@ -1,0 +1,6 @@
+node_modules/
+bun.lock
+dist/
+*.js.map
+.opencode/
+.mcp-wechat-server/

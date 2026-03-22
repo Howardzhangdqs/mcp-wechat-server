@@ -1,0 +1,24 @@
+{
+  "name": "mcp-wechat-server",
+  "version": "1.0.0",
+  "description": "MCP Server for WeChat iLink Bot - enables AI agents to send/receive WeChat messages via the Model Context Protocol",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "mcp-wechat-server": "src/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts"
+  },
+  "keywords": ["mcp", "wechat", "weixin", "ai", "agent", "model-context-protocol", "bot"],
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "qrcode": "^1.5.4",
+    "zod": "^3.24.0"
+  }
+}

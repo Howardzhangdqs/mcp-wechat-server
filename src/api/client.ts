@@ -11,6 +11,7 @@ export type ApiOptions = {
 const DEFAULT_LONG_POLL_TIMEOUT_MS = 35_000;
 const DEFAULT_API_TIMEOUT_MS = 15_000;
 const QR_LONG_POLL_TIMEOUT_MS = 35_000;
+const DEFAULT_CDN_TIMEOUT_MS = 30_000;
 const CHANNEL_VERSION = "1.0.0";
 
 function ensureTrailingSlash(url: string): string {
@@ -195,4 +196,34 @@ export async function sendTyping(params: {
     timeoutMs: DEFAULT_CONFIG_TIMEOUT_MS,
     label: "sendTyping",
   });
+}
+
+export async function downloadEncryptedMedia(params: {
+  encryptQueryParam: string;
+  timeoutMs?: number;
+}): Promise<Buffer> {
+  const controller = new AbortController();
+  const timeout = params.timeoutMs ?? DEFAULT_CDN_TIMEOUT_MS;
+  const timer = setTimeout(() => controller.abort(), timeout);
+  const url = new URL("https://novac2c.cdn.weixin.qq.com/c2c/download");
+  url.searchParams.set("encrypted_query_param", params.encryptQueryParam);
+
+  try {
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => "(unreadable)");
+      throw new Error(`downloadEncryptedMedia ${response.status}: ${body}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
+  } catch (err) {
+    clearTimeout(timer);
+    throw err;
+  }
 }

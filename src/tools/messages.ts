@@ -103,23 +103,61 @@ export async function getMessages(input: { wait?: boolean; timeout?: number }): 
 function formatMessage(msg: WeixinMessage) {
   const items = msg.item_list ?? [];
   const textParts: string[] = [];
+  const media: Array<{
+    kind: "image" | "voice" | "file" | "video";
+    index: number;
+    url?: string;
+    file_name?: string;
+    text?: string;
+    encrypt_query_param?: string;
+    aes_key?: string;
+    aeskey?: string;
+  }> = [];
 
-  for (const item of items) {
+  for (const [index, item] of items.entries()) {
     switch (item.type) {
       case 1:
         textParts.push(item.text_item?.text ?? "");
         break;
       case 2:
         textParts.push("[Image]");
+        media.push({
+          kind: "image",
+          index,
+          url: item.image_item?.url,
+          encrypt_query_param: item.image_item?.media?.encrypt_query_param,
+          aes_key: item.image_item?.media?.aes_key,
+          aeskey: item.image_item?.aeskey,
+        });
         break;
       case 3:
         textParts.push(item.voice_item?.text ? `[Voice: ${item.voice_item.text}]` : "[Voice]");
+        media.push({
+          kind: "voice",
+          index,
+          text: item.voice_item?.text,
+          encrypt_query_param: item.voice_item?.media?.encrypt_query_param,
+          aes_key: item.voice_item?.media?.aes_key,
+        });
         break;
       case 4:
         textParts.push(item.file_item?.file_name ? `[File: ${item.file_item.file_name}]` : "[File]");
+        media.push({
+          kind: "file",
+          index,
+          file_name: item.file_item?.file_name,
+          encrypt_query_param: item.file_item?.media?.encrypt_query_param,
+          aes_key: item.file_item?.media?.aes_key,
+        });
         break;
       case 5:
         textParts.push("[Video]");
+        media.push({
+          kind: "video",
+          index,
+          encrypt_query_param: item.video_item?.media?.encrypt_query_param,
+          aes_key: item.video_item?.media?.aes_key,
+        });
         break;
     }
   }
@@ -138,6 +176,7 @@ function formatMessage(msg: WeixinMessage) {
     to_user_id: msg.to_user_id,
     type: msg.message_type === 1 ? "received" : "sent",
     text,
+    media,
     context_token: msg.context_token,
     create_time: msg.create_time_ms ? new Date(msg.create_time_ms).toISOString() : undefined,
   };

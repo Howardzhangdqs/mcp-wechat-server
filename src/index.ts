@@ -8,6 +8,7 @@ import { loginQrcode, checkQrcodeStatus, loginQrcodeSchema, checkQrcodeStatusSch
 import { getMessages, getMessagesSchema } from "./tools/messages.js";
 import { sendTextMessage, sendTextMessageSchema } from "./tools/send.js";
 import { sendTypingIndicator, sendTypingSchema } from "./tools/typing.js";
+import { downloadImage, downloadImageSchema } from "./tools/media.js";
 
 const server = new McpServer(
   {
@@ -80,6 +81,15 @@ server.tool(
   sendTypingSchema.shape,
   async (input) => {
     return await sendTypingIndicator(input);
+  },
+);
+
+server.tool(
+  "download_image",
+  "Download and decrypt an image using media fields from get_messages[].media entries. Provide encrypt_query_param and aeskey (hex) or aes_key (base64).",
+  downloadImageSchema.shape,
+  async (input) => {
+    return await downloadImage(input);
   },
 );
 

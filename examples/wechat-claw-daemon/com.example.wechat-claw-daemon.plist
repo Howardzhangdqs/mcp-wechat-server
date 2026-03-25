@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.example.wechat-claw-daemon</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/opt/homebrew/bin/bun</string>
+      <string>/ABSOLUTE/PATH/TO/mcp-wechat-server/examples/wechat-claw-daemon/wechat-claw-daemon.mjs</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/ABSOLUTE/PATH/TO/mcp-wechat-server</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>WECHAT_MCP_MODE</key>
+      <string>local</string>
+      <key>WECHAT_MCP_ENTRY</key>
+      <string>/ABSOLUTE/PATH/TO/mcp-wechat-server/src/index.ts</string>
+      <key>WECHAT_OPENCLAW_PATH</key>
+      <string>openclaw</string>
+      <key>WECHAT_WAKE_WORD</key>
+      <string>你好claw</string>
+      <key>WECHAT_SLEEP_WORD</key>
+      <string>再见claw</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/wechat-claw-daemon.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/wechat-claw-daemon.error.log</string>
+  </dict>
+</plist>
